@@ -2,6 +2,8 @@ import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { CloudSun } from "lucide-react";
 import { useEffect } from 'react';
 
+
+
 export const LandingPage = ({ onAnimationComplete }) => {
 
 

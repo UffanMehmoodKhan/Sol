@@ -1,16 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUsername, setPassword } from '../store/loginSlice';
+import { login } from '../store/authSlice'; 
 import mapImage from './map.png';
-import { useNavigate } from 'react-router-dom';  
+import { useNavigate } from 'react-router-dom';
+import ErrorPopup from './ErrorPopup';
 
 const Login = () => {
-
   const dispatch = useDispatch();
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
   const username = useSelector((state) => state.login.username);
   const password = useSelector((state) => state.login.password);
+  const isDark = useSelector((state) => state.theme.isDark);
+
+  const [showError, setShowError] = useState(false);
+
+  const themeStyles = isDark
+    ? {
+        backgroundColor: '#111111',
+        textColor: 'white',
+        inputBgColor: '#222222',
+        buttonBgColor: '#22c55e',
+        buttonHoverBgColor: '#16a34a',
+        labelColor: '#22c55e',
+        inputBorderColor: '#22c55e',
+        inputTextColor: '#22c55e',
+        boxBgColor: '#111111',
+      }
+    : {
+        backgroundColor: '#f9f9f9',
+        textColor: 'black',
+        inputBgColor: '#ffffff',
+        buttonBgColor: '#22c55e',
+        buttonHoverBgColor: '#16a34a',
+        labelColor: '#22c55e',
+        inputBorderColor: '#22c55e',
+        inputTextColor: '#22c55e',
+        boxBgColor: '#ffffff',
+      };
 
   const handleUsernameChange = (e) => {
     dispatch(setUsername(e.target.value));
@@ -20,36 +48,35 @@ const Login = () => {
     dispatch(setPassword(e.target.value));
   };
 
-
-
   const handleLogin = () => {
-    // Here, you can add actual validation logic if needed
-    // For now, just log in if username and password are not empty
     if (username && password) {
-      console.log('Logged in with:', { username, password });
-      navigate('/dashboard');  // Redirect to the Dashboard page after login
+      if (username === 'admin' && password === 'admin123') {
+        console.log('Logged in with:', { username, password });
+        dispatch(login({ username })); 
+        navigate('/dashboard');
+      } else {
+        setShowError(true);
+        setTimeout(() => setShowError(false), 2000);
+      }
     } else {
-      console.log('Please enter valid credentials');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 2000);
     }
   };
 
-
-
   return (
-    <div className="bg-black text-white px-4 pt-[50px]">
-     
+    <div className={`${themeStyles.backgroundColor} text-${themeStyles.textColor} px-4 pt-[50px]`}>
       <h1 className="text-4xl md:text-6xl font-extrabold text-green-400 text-center mb-2">
         Login
       </h1>
-
 
       <p className="text-lg md:text-xl text-gray-300 text-center max-w-xl mx-auto mb-6">
         Please log in to access your personalized weather dashboard.
       </p>
 
-     
+      {showError && <ErrorPopup message="Incorrect username or password" onClose={() => setShowError(false)} />}
+
       <div className="flex flex-col md:flex-row gap-4 items-center justify-center max-w-6xl mx-auto">
-       
         <div className="flex-1 max-w-md w-full">
           <img
             src={mapImage}
@@ -61,7 +88,7 @@ const Login = () => {
         <Box
           sx={{
             flex: 1,
-            backgroundColor: '#111111',
+            backgroundColor: themeStyles.boxBgColor,
             borderRadius: 2,
             padding: 4,
             boxShadow: '0 4px 10px rgba(0,0,0,0.6)',
@@ -75,9 +102,24 @@ const Login = () => {
             variant="outlined"
             value={username}
             onChange={handleUsernameChange}
-            sx={inputStyle}
-            InputLabelProps={{ style: { color: '#22c55e' } }}
-            InputProps={{ style: { color: '#22c55e' } }}
+            sx={{
+              mb: 3,
+              backgroundColor: themeStyles.inputBgColor,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                '& fieldset': {
+                  borderColor: themeStyles.inputBorderColor,
+                },
+                '&:hover fieldset': {
+                  borderColor: themeStyles.inputBorderColor,
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: themeStyles.inputBorderColor,
+                },
+              },
+            }}
+            InputLabelProps={{ style: { color: themeStyles.labelColor } }}
+            InputProps={{ style: { color: themeStyles.inputTextColor } }}
           />
 
           <TextField
@@ -87,9 +129,24 @@ const Login = () => {
             variant="outlined"
             value={password}
             onChange={handlePasswordChange}
-            sx={inputStyle}
-            InputLabelProps={{ style: { color: '#22c55e' } }}
-            InputProps={{ style: { color: '#22c55e' } }}
+            sx={{
+              mb: 3,
+              backgroundColor: themeStyles.inputBgColor,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                '& fieldset': {
+                  borderColor: themeStyles.inputBorderColor,
+                },
+                '&:hover fieldset': {
+                  borderColor: themeStyles.inputBorderColor,
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: themeStyles.inputBorderColor,
+                },
+              },
+            }}
+            InputLabelProps={{ style: { color: themeStyles.labelColor } }}
+            InputProps={{ style: { color: themeStyles.inputTextColor } }}
           />
 
           <Button
@@ -99,8 +156,8 @@ const Login = () => {
             sx={{
               mt: 2,
               borderRadius: '8px',
-              backgroundColor: '#22c55e',
-              '&:hover': { backgroundColor: '#16a34a' },
+              backgroundColor: themeStyles.buttonBgColor,
+              '&:hover': { backgroundColor: themeStyles.buttonHoverBgColor },
               padding: '12px 0',
             }}
           >
@@ -113,19 +170,3 @@ const Login = () => {
 };
 
 export default Login;
-
-const inputStyle = {
-  mb: 3,
-  '& .MuiOutlinedInput-root': {
-    borderRadius: '8px',
-    '& fieldset': {
-      borderColor: '#22c55e',
-    },
-    '&:hover fieldset': {
-      borderColor: '#22c55e',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: '#22c55e',
-    },
-  },
-};

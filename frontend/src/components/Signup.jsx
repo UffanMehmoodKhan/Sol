@@ -10,22 +10,44 @@ import {
 } from '../store/signupSlice';
 import mapImage from './map.png';
 
-
 const Signup = () => {
 
 
   const dispatch = useDispatch();
   const { name, username, email, password, phone } = useSelector((state) => state.signup);
+  const isDark = useSelector((state) => state.theme.isDark); 
+
+
+  const themeStyles = isDark
+    ? {
+        backgroundColor: '#111111',
+        textColor: 'white',
+        inputBgColor: '#222222',
+        buttonBgColor: '#22c55e',
+        buttonHoverBgColor: '#16a34a',
+        labelColor: '#22c55e',
+        inputBorderColor: '#22c55e',
+        inputTextColor: '#22c55e',
+        boxBgColor: '#111111',
+      }
+    : {
+        backgroundColor: '#f9f9f9',
+        textColor: 'black',
+        inputBgColor: '#ffffff',
+        buttonBgColor: '#22c55e',
+        buttonHoverBgColor: '#16a34a',
+        labelColor: '#22c55e',
+        inputBorderColor: '#22c55e',
+        inputTextColor: '#22c55e',
+        boxBgColor: '#ffffff',
+      };
 
   const handleSignup = () => {
     console.log({ name, username, email, password, phone });
   };
 
-
-
   return (
-    <div className="bg-black text-white px-4 pt-[50px]">
-      
+    <div className={`${themeStyles.backgroundColor} text-${themeStyles.textColor} px-4 pt-[50px]`}>
       <h1 className="text-4xl md:text-6xl font-extrabold text-green-400 text-center mb-2">
         Signup
       </h1>
@@ -33,22 +55,19 @@ const Signup = () => {
         Create an account to start using WEATHERDASH today!
       </p>
 
-      
       <div className="flex flex-col md:flex-row items-center justify-center max-w-6xl mx-auto gap-6">
-       
         <div className="flex-1 max-w-md w-full">
           <img
             src={mapImage}
             alt="Map"
-            className="w-5000 h-7000 object-cover rounded-lg max-h-[540px]"
+            className="w-800 h-900 object-cover rounded-lg max-h-[540px]"
           />
         </div>
 
-        
         <Box
           sx={{
             flex: 1,
-            backgroundColor: '#111111',
+            backgroundColor: themeStyles.boxBgColor,
             padding: 4,
             borderRadius: 2,
             boxShadow: '0 4px 10px rgba(0,0,0,0.6)',
@@ -62,8 +81,12 @@ const Signup = () => {
             fullWidth
             value={name}
             onChange={(e) => dispatch(setName(e.target.value))}
-            sx={inputStyle}
-            InputProps={{ style: { color: '#22c55e' } }}
+            sx={{
+              ...inputStyle,
+              backgroundColor: themeStyles.inputBgColor,
+            }}
+            InputProps={{ style: { color: themeStyles.inputTextColor } }}
+            InputLabelProps={{ style: { color: themeStyles.labelColor } }}
           />
 
           <TextField
@@ -72,8 +95,12 @@ const Signup = () => {
             fullWidth
             value={username}
             onChange={(e) => dispatch(setUsername(e.target.value))}
-            sx={inputStyle}
-            InputProps={{ style: { color: '#22c55e' } }}
+            sx={{
+              ...inputStyle,
+              backgroundColor: themeStyles.inputBgColor,
+            }}
+            InputProps={{ style: { color: themeStyles.inputTextColor } }}
+            InputLabelProps={{ style: { color: themeStyles.labelColor } }}
           />
 
           <TextField
@@ -82,8 +109,12 @@ const Signup = () => {
             fullWidth
             value={email}
             onChange={(e) => dispatch(setEmail(e.target.value))}
-            sx={inputStyle}
-            InputProps={{ style: { color: '#22c55e' } }}
+            sx={{
+              ...inputStyle,
+              backgroundColor: themeStyles.inputBgColor,
+            }}
+            InputProps={{ style: { color: themeStyles.inputTextColor } }}
+            InputLabelProps={{ style: { color: themeStyles.labelColor } }}
           />
 
           <TextField
@@ -93,8 +124,12 @@ const Signup = () => {
             fullWidth
             value={password}
             onChange={(e) => dispatch(setPassword(e.target.value))}
-            sx={inputStyle}
-            InputProps={{ style: { color: '#22c55e' } }}
+            sx={{
+              ...inputStyle,
+              backgroundColor: themeStyles.inputBgColor,
+            }}
+            InputProps={{ style: { color: themeStyles.inputTextColor } }}
+            InputLabelProps={{ style: { color: themeStyles.labelColor } }}
           />
 
           <TextField
@@ -103,8 +138,12 @@ const Signup = () => {
             fullWidth
             value={phone}
             onChange={(e) => dispatch(setPhone(e.target.value))}
-            sx={inputStyle}
-            InputProps={{ style: { color: '#22c55e' } }}
+            sx={{
+              ...inputStyle,
+              backgroundColor: themeStyles.inputBgColor,
+            }}
+            InputProps={{ style: { color: themeStyles.inputTextColor } }}
+            InputLabelProps={{ style: { color: themeStyles.labelColor } }}
           />
 
           <Button
@@ -112,8 +151,8 @@ const Signup = () => {
             fullWidth
             onClick={handleSignup}
             sx={{
-              backgroundColor: '#22c55e',
-              '&:hover': { backgroundColor: '#16a34a' },
+              backgroundColor: themeStyles.buttonBgColor,
+              '&:hover': { backgroundColor: themeStyles.buttonHoverBgColor },
               mt: 3,
               borderRadius: '8px',
               padding: '12px 0',
@@ -136,7 +175,6 @@ const inputStyle = {
   '& label': { color: '#22c55e' },
   '& label.Mui-focused': { color: '#22c55e' },
   '& .MuiOutlinedInput-root': {
-    color: '#22c55e',
     borderRadius: '8px',
     '& fieldset': { borderColor: '#22c55e' },
     '&:hover fieldset': { borderColor: '#22c55e' },
