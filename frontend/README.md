@@ -1,19 +1,12 @@
-# Sol
+# React + Vite
 
-MERN stack web app designed to search and display information about the 
-weather forecasts and data utilising the OpenWeatherMap API.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-# Features
-- Search for weather data by city name
-- Display current weather conditions
-- 7-day weather forecast
-- Responsive design for mobile and desktop
-- User-friendly interface
-- Error handling for invalid city names
-- Loading indicators for API requests
-- Unit tests for components and API calls
-- Integration with OpenWeatherMap API
-- Environment variables for API key
-- Customizable theme with light and dark modes
-- Accessibility features for better usability
-- Localization support for multiple languages
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
