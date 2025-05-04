@@ -4,9 +4,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-
-import indexRouter from './src/routes/index';
-import usersRouter from './src/routes/users';
+import userRouter from './src/routes/user';
 
 const app = express();
 
@@ -19,8 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/users', userRouter);
 
 app.use(function (req: Request, res: Response, next: NextFunction) {
   next(createError(404));
@@ -32,6 +29,11 @@ app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
 
   res.status(err.status || 500);
   res.render('error');
+});
+
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });
 
 export default app;
