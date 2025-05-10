@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { saltrounds } from '../common';
+import { saltrounds, generateCookie } from '../common';
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,6 @@ const createUser = async (
   email: any,
   phone_no: any
 ) => {
-  // Return the created user
   return await prisma.user.create({
     data: {
       name,
@@ -29,12 +28,10 @@ class UserController {
     try {
       const { name, username, password, email, phone_no } = req.body;
 
-      // Check if username already exists
       const existingUsername = await prisma.user.findUnique({
         where: { username },
       });
 
-      // Check if email already exists
       const existingEmail = await prisma.user.findUnique({
         where: { email },
       });
@@ -80,6 +77,38 @@ class UserController {
       console.error('Error fetching users:', error);
       res.status(500).send({ message: 'Error fetching users', error });
     }
+  }
+
+  static async login(req: Request, res: Response) {
+    const { username, password } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (!user) {
+      res.send({ success: false, message: 'User not found' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user!.password);
+    if (!isPasswordValid) {
+      res.send({
+        success: false,
+        message: 'Invalid password',
+        password: false,
+      });
+    }
+
+    const token = generateCookie(username);
+
+    res
+      .cookie('token', token, {
+        httpOnly: true,
+        maxAge: 3600000,
+        sameSite: 'strict',
+      })
+      .status(200)
+      .json({ message: 'Logged in successfully', success: true, user: user });
   }
 }
 
