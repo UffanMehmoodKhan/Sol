@@ -3,7 +3,7 @@ const axios = require('axios');
 const cors = require('cors');
 require('dotenv').config();
 
-const weatherRouter = require('./routes/weather');
+const weatherRouter = require('./src/routes/weather');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +19,7 @@ app.get("/", async (req, res) => {
     console.log("application has started");
     res.send('Application has started');
 });
+
 
 // Start the server
 app.listen(PORT, () => {
