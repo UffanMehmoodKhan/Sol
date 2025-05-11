@@ -3,14 +3,16 @@ import { LandingPage } from './components/LandingPage';
 import { Provider, useSelector } from 'react-redux';
 import { store } from './store/store';
 import HomePage from './components/HomePage';  
-import Dashboard from './components/Dashboard';  
+import Dashboard from './components/Dashboard';
+import Weather from './components/Weather';
+import PrivateRoute from "./components/PrivateRoute.jsx";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 
-const PrivateRoute = ({ children }) => {
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  return isAuthenticated ? children : <Navigate to="/" replace />;
-};
+// const PrivateRoute = ({ children }) => {
+//   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+//   return isAuthenticated ? children : <Navigate to="/" replace />;
+// };
 
 function App() {
   
@@ -30,14 +32,24 @@ function App() {
         <Provider store={store}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              }
+
+            <Route path="/dashboard"
+                   element={
+                     <PrivateRoute>
+                       <Dashboard />
+                     </PrivateRoute>
+                   }
             />
+
+            <Route path="/dashboard/weather"
+                   element={
+                     <PrivateRoute>
+                       <Weather />
+                     </PrivateRoute>
+
+                   }
+            />
+
           </Routes>
         </Provider>
       </div>
