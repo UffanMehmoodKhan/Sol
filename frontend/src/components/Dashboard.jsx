@@ -9,96 +9,30 @@ import mapImage from './map.png';
 import CurrentWeatherCard from '../components/CurrentWeatherCard';
 import ForecastCard from '../components/ForecastCard';
 import AirPollutionCard from '../components/AirPollutionCard';
-
+import Settings from '../components/Settings';
+import About from '../components/About';
 
 const Dashboard = () => {
-
-
   const dispatch = useDispatch();
   const isDark = useSelector((state) => state.theme.isDark);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('current-weather');
+  const userName = useSelector((state) => state.login.username);
 
-  const userName = 'John Doe';
-
-  ///////////  MOCK DATA  /////////////
-  // Replace this with actual data fetching logic
-
-  const weatherData = {
-    city: 'New York',
-    temperature: '25°C',
-    humidity: '60%',
-    condition: 'Clear Sky',
-    icon: mapImage,
-  };
-
-  const pollutionData = {
-    aqi: 3,
-    components: {
-      pm2_5: 16.8,
-      pm10: 22.4,
-      co: 340.7,
-      no2: 18.5,
-      o3: 45.3,
-      so2: 4.6,
-    },
-  };
-
-  const forecastData = [
-    {
-      date: 'Monday',
-      condition: 'Sunny',
-      icon: 'path_to_sunny_icon.png',
-      minTemp: 18,
-      maxTemp: 24,
-    },
-    {
-      date: 'Tuesday',
-      condition: 'Cloudy',
-      icon: 'path_to_cloudy_icon.png',
-      minTemp: 19,
-      maxTemp: 23,
-    },
-    {
-      date: 'Wednesday',
-      condition: 'Rainy',
-      icon: 'path_to_rainy_icon.png',
-      minTemp: 17,
-      maxTemp: 21,
-    },
-    {
-      date: 'Thursday',
-      condition: 'Stormy',
-      icon: 'path_to_stormy_icon.png',
-      minTemp: 16,
-      maxTemp: 20,
-    },
-    {
-      date: 'Friday',
-      condition: 'Clear Sky',
-      icon: 'path_to_clear_icon.png',
-      minTemp: 20,
-      maxTemp: 25,
-    },
-  ];
-
-  ///////////  END OF MOCK DATA  /////////////
-
+  // Update your tabContent object in Dashboard
+const tabContent = {
+  'current-weather': <CurrentWeatherCard isDark={isDark} />,
+  'weather-forecast': <ForecastCard isDark={isDark} />,
+  'air-pollution': <AirPollutionCard isDark={isDark} />,
+  'settings': <Settings />,
+  'about': <About />,
+};
 
   return (
-
-
-    <div
-      className={`${
-        isDark ? 'bg-black text-white' : 'bg-white text-black'
-      } min-h-screen font-sans transition-colors duration-500`}
-    >
+    <div className={`${isDark ? 'bg-black text-white' : 'bg-white text-black'} min-h-screen font-sans transition-colors duration-500`}>
       
-      <div
-        className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center shadow-md border-b transition-colors duration-300
-          ${isDark ? 'bg-black border-green-500' : 'bg-gray-100 border-green-300'}
-        `}
-      >
-        
+      <div className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center shadow-md border-b transition-colors duration-300
+          ${isDark ? 'bg-black border-green-500' : 'bg-gray-100 border-green-300'}`}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -113,9 +47,7 @@ const Dashboard = () => {
               repeatType: 'mirror',
               ease: 'easeInOut',
             }}
-            className={`${
-              isDark ? 'text-green-400' : 'text-green-600'
-            } drop-shadow-lg`}
+            className={`${isDark ? 'text-green-400' : 'text-green-600'} drop-shadow-lg`}
           >
             <CloudSun className="w-8 h-8" />
           </motion.div>
@@ -124,7 +56,6 @@ const Dashboard = () => {
           </span>
         </motion.div>
 
-        
         <IconButton
           onClick={() => setMenuOpen((prev) => !prev)}
           className="text-green-400 md:hidden"
@@ -133,46 +64,86 @@ const Dashboard = () => {
         </IconButton>
       </div>
 
-
-      <div
-        className={`fixed top-[64px] left-0 bottom-0 w-64 shadow-lg z-40 flex flex-col transition-transform duration-300
+     
+      <div className={`fixed top-[64px] left-0 bottom-0 w-64 shadow-lg z-40 flex flex-col transition-transform duration-300
           ${menuOpen ? 'translate-x-0' : '-translate-x-full'}
-          ${isDark ? 'bg-black border-r border-green-700' : 'bg-gray-100 border-r border-green-300'}
-        `}
-      >
+          ${isDark ? 'bg-black border-r border-green-700' : 'bg-gray-100 border-r border-green-300'}`}>
+        
         
         <div className="p-6 flex items-center gap-3 border-b border-green-500">
           <AccountCircle
             sx={{ fontSize: 40 }}
             className={`${isDark ? 'text-green-400' : 'text-green-600'}`}
           />
-          <p
-            className={`text-lg font-semibold tracking-wide ${isDark ? 'text-green-400' : 'text-green-700'}`}
-          >
+          <p className={`text-lg font-semibold tracking-wide ${isDark ? 'text-green-400' : 'text-green-700'}`}>
             {userName}
           </p>
         </div>
 
-       
+        
         <div className="flex-1 p-6 pt-4 flex flex-col gap-4">
-          {['Home', 'Settings', 'About'].map((label) => (
-            <button
-              key={label}
-              className="w-full text-left px-4 py-3 rounded-md text-green-400 hover:bg-green-600 hover:text-white transition duration-300 font-semibold tracking-wide shadow-sm"
-            >
-              {label}
-            </button>
-          ))}
+          <button
+            onClick={() => setActiveTab('current-weather')}
+            className={`w-full text-left px-4 py-3 rounded-md transition duration-300 font-semibold tracking-wide shadow-sm ${
+              activeTab === 'current-weather'
+                ? 'bg-green-600 text-white'
+                : `${isDark ? 'text-green-400 hover:bg-green-800' : 'text-green-600 hover:bg-green-100'}`
+            }`}
+          >
+            Current Weather
+          </button>
+          
+          <button
+            onClick={() => setActiveTab('weather-forecast')}
+            className={`w-full text-left px-4 py-3 rounded-md transition duration-300 font-semibold tracking-wide shadow-sm ${
+              activeTab === 'weather-forecast'
+                ? 'bg-green-600 text-white'
+                : `${isDark ? 'text-green-400 hover:bg-green-800' : 'text-green-600 hover:bg-green-100'}`
+            }`}
+          >
+            Weather Forecast
+          </button>
+          
+          <button
+            onClick={() => setActiveTab('air-pollution')}
+            className={`w-full text-left px-4 py-3 rounded-md transition duration-300 font-semibold tracking-wide shadow-sm ${
+              activeTab === 'air-pollution'
+                ? 'bg-green-600 text-white'
+                : `${isDark ? 'text-green-400 hover:bg-green-800' : 'text-green-600 hover:bg-green-100'}`
+            }`}
+          >
+            Air Pollution
+          </button>
+
+          
+<button
+  onClick={() => setActiveTab('settings')}
+  className={`w-full text-left px-4 py-3 rounded-md transition duration-300 font-semibold tracking-wide shadow-sm ${
+    activeTab === 'settings'
+      ? 'bg-green-600 text-white'
+      : `${isDark ? 'text-green-400 hover:bg-gray-800' : 'text-green-600 hover:bg-gray-200'}`
+  }`}
+>
+  Settings
+</button>
+
+
+<button
+  onClick={() => setActiveTab('about')}
+  className={`w-full text-left px-4 py-3 rounded-md transition duration-300 font-semibold tracking-wide shadow-sm ${
+    activeTab === 'about'
+      ? 'bg-green-600 text-white'
+      : `${isDark ? 'text-green-400 hover:bg-gray-800' : 'text-green-600 hover:bg-gray-200'}`
+  }`}
+>
+  About
+</button>
         </div>
 
-        
-        <div
-          className={`p-6 border-t transition-colors duration-300 ${
-            isDark ? 'border-green-700' : 'border-green-300'
-          }`}
-        >
+      
+        <div className={`p-6 border-t transition-colors duration-300 ${isDark ? 'border-green-700' : 'border-green-300'}`}>
           <button
-            onClick={() => dispatch(toggleTheme())}
+            onClick={() => dispatch(toggleTheme())}A
             className="w-full flex items-center justify-center gap-2 px-4 py-2 text-green-400 hover:bg-green-600 hover:text-white rounded-md transition duration-300"
           >
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -181,14 +152,10 @@ const Dashboard = () => {
         </div>
       </div>
 
-      
+     
       <div className={`pt-[80px] px-6 transition-all duration-300 ${menuOpen ? 'ml-64' : 'ml-0'}`}>
-      
         <div className="space-y-6">
-          <CurrentWeatherCard weather={weatherData} isDark={isDark} />
-          <ForecastCard forecast={forecastData} />
-          <AirPollutionCard pollution={pollutionData} />
-
+          {tabContent[activeTab]}
         </div>
       </div>
     </div>
