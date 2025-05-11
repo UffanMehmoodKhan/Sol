@@ -11,6 +11,8 @@ import {
   MapPin,
   Eye
 } from 'lucide-react';
+import axios from "axios";
+
 
 const CurrentWeatherCard = ({ isDark }) => {
   // Mock data matching your API response structure
@@ -40,8 +42,26 @@ const CurrentWeatherCard = ({ isDark }) => {
   };
 
   const [city, setCity] = useState('Lahore');
-  const [weather] = useState(mockWeather);
-  
+  const [weather, setWeather] = useState(mockWeather);
+
+  const handleInputChange = (e) => {
+    setCity(e.target.value);
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/api/weather',{ city });
+      setWeather(response.data);
+    } catch (err) {
+      console.error("Error fetching weather data:", err);
+    }
+  };
+
+  const kelvinToCelsius = (temp) => {
+    return (temp - 273.15);
+  }
+
   const formatTime = (timestamp) => {
     return new Date(timestamp * 1000).toLocaleTimeString([], {
       hour: '2-digit',
@@ -57,32 +77,34 @@ const CurrentWeatherCard = ({ isDark }) => {
     <div className={`w-full min-h-screen p-6 transition-colors duration-300 ${
       isDark ? 'bg-black text-green-400' : 'bg-white text-green-800'
     }`}>
-      
+
       <div className={`flex items-center mb-8 p-2 rounded-lg max-w-2xl mx-auto ${
-        isDark ? 'bg-gray-900' : 'bg-gray-100'
+          isDark ? 'bg-gray-900' : 'bg-gray-100'
       }`}>
-        <MapPin className={`mx-3 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
-        <input
-          type="text"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          placeholder="Search for a city..."
-          className={`flex-1 py-2 bg-transparent focus:outline-none ${
-            isDark ? 'placeholder-gray-500' : 'placeholder-gray-400'
-          }`}
-        />
-        <button className="p-2 rounded-full hover:bg-gray-800 transition-colors">
-          <Search className={`w-5 h-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
-        </button>
+        <MapPin className={`mx-3 ${isDark ? 'text-green-400' : 'text-green-600'}`}/>
+        <form onSubmit={handleFormSubmit} className="flex w-full">
+          <input
+              type="text"
+              value={city}
+              onChange={handleInputChange}
+              placeholder="Search for a city..."
+              className={`flex-1 py-2 bg-transparent focus:outline-none ${
+                  isDark ? 'placeholder-gray-500' : 'placeholder-gray-400'
+              }`}
+          />
+          <button type="submit" className="p-2 rounded-full hover:bg-gray-800 transition-colors">
+            <Search className={`w-5 h-5 ${isDark ? 'text-green-400' : 'text-green-600'}`}/>
+          </button>
+        </form>
       </div>
 
-      
+
       <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
-      
+
         <div className="flex-1">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-4xl font-bold">{weather.name}</h1>
+              <h1 className="text-4xl font-bold">{weather.name + " | " + weather.sys.country}</h1>
               <p className="text-lg opacity-75 mt-2">
                 {new Date(weather.dt * 1000).toLocaleDateString('en-US', {
                   weekday: 'long',
@@ -91,7 +113,7 @@ const CurrentWeatherCard = ({ isDark }) => {
                 })}
               </p>
               <p className="text-6xl font-bold mt-6">
-                {Math.round(weather.main.temp)}°C
+                {Math.round(kelvinToCelsius(weather.main.temp))}°C
               </p>
               <p className="text-2xl capitalize mt-3">
                 {weather.weather[0].description}
