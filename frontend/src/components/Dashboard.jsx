@@ -143,7 +143,7 @@ const tabContent = {
       
         <div className={`p-6 border-t transition-colors duration-300 ${isDark ? 'border-green-700' : 'border-green-300'}`}>
           <button
-            onClick={() => dispatch(toggleTheme())}A
+            onClick={() => dispatch(toggleTheme())}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 text-green-400 hover:bg-green-600 hover:text-white rounded-md transition duration-300"
           >
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
