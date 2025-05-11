@@ -96,7 +96,7 @@ const HomePage = () => {
       <footer className={`py-7 mt-35 border-t ${isDark ? 'border-green-500 bg-black text-green-400' : 'border-gray-300 bg-gray-100 text-green-700'}`}>
         <div className="text-center">
           <p className="text-sm md:text-base font-extrabold">
-            &copy; 2025 <span className={`${isDark ? 'text-white' : 'text-black'}`}>Web Engg Project WEATHERDASH</span> phew phew.
+            &copy; 2025 <span className={`${isDark ? 'text-white' : 'text-black'}`}>Web Engg Project WEATHERDASH</span>
           </p>
         </div>
       </footer>
