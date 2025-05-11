@@ -3,9 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   name: '',
   username: '',
-  email: '',
   password: '',
-  phone: '',
+  email: '',
+  phone_no: '',
 };
 
 const signupSlice = createSlice({
@@ -25,7 +25,7 @@ const signupSlice = createSlice({
       state.password = action.payload;
     },
     setPhone: (state, action) => {
-      state.phone = action.payload;
+      state.phone_no = action.payload;
     },
     resetSignup: () => initialState,
   },
