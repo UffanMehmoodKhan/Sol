@@ -11,6 +11,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import userRouter from './src/routes/user';
 import weatherRouter from './src/routes/weather';
+import pollutionRouter from './src/routes/pollution';
 
 
 const app = express();
@@ -43,6 +44,9 @@ app.use((req, res, next) => {
 
 // Use the weather routes
 app.use('/api/weather', weatherRouter);
+
+// Use Air Pollution API route
+app.use('/api/pollution', pollutionRouter);
 
 // Middleware to handle 404 errors
 app.use(function (req: Request, res: Response, next: NextFunction) {
