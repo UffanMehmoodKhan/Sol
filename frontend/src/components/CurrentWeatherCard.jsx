@@ -51,7 +51,7 @@ const CurrentWeatherCard = ({ isDark }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/weather',{ city });
+      const response = await axios.post('http://localhost:3000/api/weather',{ city });
       setWeather(response.data);
     } catch (err) {
       console.error("Error fetching weather data:", err);

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, MapPin, AlertCircle, Loader2 } from 'lucide-react';
+import axios from "axios";
 
 const aqiLabels = ['Good', 'Fair', 'Moderate', 'Poor', 'Very Poor'];
 const aqiColors = [
@@ -39,28 +40,38 @@ const AirPollutionCard = ({ isDark }) => {
     ]
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    
-    // In a real implementation API CALL BACKEND
-    // fetch(`/api/pollution?city=${city}`)
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     setPollution(data);
-    //     setLoading(false);
-    //   })
-    //   .catch(err => {
-    //     setError('Failed to fetch pollution data');
-    //     setLoading(false);
-    //   });
+  // const handleSearch = (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError(null);
+  //
+  //   // In a real implementation API CALL BACKEND
+  //   // fetch(`/api/pollution?city=${city}`)
+  //   //   .then(res => res.json())
+  //   //   .then(data => {
+  //   //     setPollution(data);
+  //   //     setLoading(false);
+  //   //   })
+  //   //   .catch(err => {
+  //   //     setError('Failed to fetch pollution data');
+  //   //     setLoading(false);
+  //   //   });
+  //
+  //   // For now MOCK DATA
+  //   setTimeout(() => {
+  //     setPollution(mockPollutionData);
+  //     setLoading(false);
+  //   }, 500);
+  // };
 
-    // For now MOCK DATA
-    setTimeout(() => {
-      setPollution(mockPollutionData);
-      setLoading(false);
-    }, 500);
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:3000/api/pollution',{ city });
+      setPollution(response.data);
+    } catch (err) {
+      console.error("Error fetching weather data:", err);
+    }
   };
 
   if (loading) {
@@ -90,7 +101,7 @@ const AirPollutionCard = ({ isDark }) => {
   return (
     <div className={`w-full rounded-xl p-6 ${isDark ? 'bg-black text-green-400' : 'bg-white text-green-800'}`}>
       
-      <form onSubmit={handleSearch} className="mb-6">
+      <form onSubmit={handleFormSubmit} className="mb-6">
         <div className={`flex items-center rounded-lg overflow-hidden ${
           isDark ? 'bg-gray-900 border border-gray-800' : 'bg-gray-100'
         }`}>
