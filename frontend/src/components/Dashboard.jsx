@@ -52,7 +52,7 @@ const tabContent = {
             <CloudSun className="w-8 h-8" />
           </motion.div>
           <span className={`${isDark ? 'text-green-400' : 'text-green-600'}`}>
-            WEATHERDASH
+            SOL
           </span>
         </motion.div>
 

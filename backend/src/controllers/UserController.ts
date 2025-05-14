@@ -12,7 +12,7 @@ const createUser = async (
   email: any,
   phone_no: any
 ) => {
-  return await prisma.user.create({
+  return prisma.user.create({
     data: {
       name,
       username,
@@ -25,8 +25,10 @@ const createUser = async (
 
 class UserController {
   static async register(req: Request, res: Response) {
+
     try {
       const { name, username, password, email, phone_no } = req.body;
+      console.log("Request body: ", { name, username, password, email, phone_no });
 
       const existingUsername = await prisma.user.findUnique({
         where: { username },

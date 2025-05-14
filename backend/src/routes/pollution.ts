@@ -22,7 +22,13 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
 
     try {
         const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${AUTH_TOKEN}`);
-        res.json(response.data);
+        let lat = response.data.coord.lat;
+        let long = response.data.coord.lon;
+
+        const pollutionResponse = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${long}&appid=${AUTH_TOKEN}`);
+        console.log(pollutionResponse.data);
+
+        res.json(pollutionResponse.data);
     } catch (error) {
         const err = error as any; // Cast error to any to access its properties
         console.error("Error fetching weather data:", err.message);

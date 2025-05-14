@@ -1,27 +1,27 @@
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
+interface AuthenticatedRequest extends Request {
+  user?: string | JwtPayload;
+}
 
 export const authMiddleware = (
-  req: { cookies: { token: any }; user: string | jwt.JwtPayload },
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      send: { (arg0: { message: string }): any; new (): any };
-    };
-  },
-  next: () => void
-) => {
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): void => {
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).send({ message: 'Unauthorized' });
+    res.status(401).send({ message: 'Unauthorized: No token provided' });
+    return;
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).send({ message: 'Invalid token' });
+    res.status(401).send({ message: 'Invalid token' });
   }
 };
