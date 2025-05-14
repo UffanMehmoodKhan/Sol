@@ -56,7 +56,6 @@ const Login = () => {
 
         try {
             const response = await axiosInstance.post('http://localhost:3000/users/login', { username, password });
-            console.log('Login response:', response.data);
 
             if (response.data.success) {
                 dispatch(login({ username }));
