@@ -12,11 +12,16 @@ import pollutionRouter from './src/routes/pollution';
 import forecastRouter from './src/routes/forecast';
 
 import { PrismaClient } from '@prisma/client';
+import jwt, {JwtPayload} from "jsonwebtoken";
 const prisma = new PrismaClient();
 
 dotenv.config();
 
 const app = express();
+
+interface AuthenticatedRequest extends Request {
+  user?: string | JwtPayload;
+}
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +34,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Update this to match your frontend URL
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
@@ -37,9 +42,28 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routers
-app.get('/', (req, res) => {
+app.get('/',(req, res) => {
   res.send('Welcome to the Weather API');
 });
+
+app.get('/verify', (req: AuthenticatedRequest,
+                    res: Response,) => {
+
+  const token = req.cookies.token;
+
+  if (!token) {
+    res.status(401).send({ message: 'Unauthorized: No token provided' , success: false});
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    req.user = decoded;
+    res.status(200).send({message: 'Authorized: Token Provided', success: true});
+  } catch (err) {
+    res.status(401).send({ message: 'Invalid token' , success: false});
+  }
+})
 app.use('/users', userRouter);
 app.use('/api/weather', authMiddleware, weatherRouter);
 app.use('/api/pollution', authMiddleware, pollutionRouter);

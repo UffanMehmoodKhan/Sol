@@ -9,7 +9,6 @@ const router = express.Router();
 const AUTH_TOKEN = process.env.AUTH_TOKEN;
 
 // Middleware
-router.use(cors());
 router.use(express.json());
 
 router.post("/", async (req: Request, res: Response): Promise<void> => {

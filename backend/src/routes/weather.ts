@@ -9,7 +9,6 @@ const router: Router = express.Router();
 const AUTH_TOKEN = process.env.AUTH_TOKEN;
 
 // Middleware
-router.use(cors());
 router.use(express.json());
 
 // Route to fetch weather data
