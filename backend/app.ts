@@ -5,11 +5,11 @@ import createError from 'http-errors';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-
+import { authMiddleware } from './src/middlewares/authMiddleware';
 import userRouter from './src/routes/user';
 import weatherRouter from './src/routes/weather';
 import pollutionRouter from './src/routes/pollution';
-import forecastRouter from "./src/routes/forecast";
+import forecastRouter from './src/routes/forecast';
 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
@@ -37,13 +37,13 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routers
-app.get("/", (req, res) =>{
-    res.send("Welcome to the Weather API");
-})
+app.get('/', (req, res) => {
+  res.send('Welcome to the Weather API');
+});
 app.use('/users', userRouter);
-app.use('/api/weather', weatherRouter);
-app.use('/api/pollution', pollutionRouter);
-app.use('/api/forecast', forecastRouter);
+app.use('/api/weather', authMiddleware, weatherRouter);
+app.use('/api/pollution', authMiddleware, pollutionRouter);
+app.use('/api/forecast', authMiddleware, forecastRouter);
 
 // Logging incoming requests
 app.use((req, res, next) => {
