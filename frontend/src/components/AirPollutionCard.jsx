@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, MapPin, AlertCircle, Loader2 } from 'lucide-react';
-import axios from "axios";
+import axiosInstance from '../api/axiosConfig';
 
 const aqiLabels = ['Good', 'Fair', 'Moderate', 'Poor', 'Very Poor'];
 const aqiColors = [
@@ -67,7 +67,7 @@ const AirPollutionCard = ({ isDark }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/pollution',{ city });
+      const response = await axiosInstance.post('/api/pollution',{ city });
       setPollution(response.data);
     } catch (err) {
       console.error("Error fetching weather data:", err);

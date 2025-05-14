@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import axiosInstance from '../api/axiosConfig';
 import {
   Thermometer,
   Droplet,
@@ -20,7 +21,7 @@ const ForecastCard = ({ isDark }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/forecast", {
+      const response = await axiosInstance.post("/api/forecast", {
         city,
       });
 

@@ -11,7 +11,7 @@ import {
   MapPin,
   Eye
 } from 'lucide-react';
-import axios from "axios";
+import axiosInstance from '../api/axiosConfig';
 
 
 const CurrentWeatherCard = ({ isDark }) => {
@@ -51,7 +51,7 @@ const CurrentWeatherCard = ({ isDark }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/weather',{ city });
+      const response = await axiosInstance.post('/api/weather',{ city });
       setWeather(response.data);
     } catch (err) {
       console.error("Error fetching weather data:", err);

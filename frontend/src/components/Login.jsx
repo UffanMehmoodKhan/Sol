@@ -6,6 +6,9 @@ import { login } from '../store/authSlice';
 import mapImage from './map.png';
 import { useNavigate } from 'react-router-dom';
 import ErrorPopup from './ErrorPopup';
+import axiosInstance from '../api/axiosConfig';
+
+
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -48,21 +51,23 @@ const Login = () => {
     dispatch(setPassword(e.target.value));
   };
 
-  const handleLogin = () => {
-    if (username && password) {
-      if (username === 'admin' && password === 'admin123') {
-        console.log('Logged in with:', { username, password });
-        dispatch(login({ username })); 
-        navigate('/dashboard');
-      } else {
-        setShowError(true);
-        setTimeout(() => setShowError(false), 2000);
-      }
-    } else {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 2000);
-    }
-  };
+    const handleLogin = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await axiosInstance.post('http://localhost:3000/users/login', { username, password });
+            console.log('Login response:', response.data);
+
+            if (response.data.success) {
+                dispatch(login({ username }));
+                navigate('/dashboard');
+            } else {
+                console.error('Login failed:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
+    };
 
   return (
     <div className={`${themeStyles.backgroundColor} text-${themeStyles.textColor} px-4 pt-[50px]`}>

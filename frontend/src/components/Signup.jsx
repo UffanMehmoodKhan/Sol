@@ -10,9 +10,12 @@ import {
 } from '../store/signupSlice';
 import mapImage from './map.png';
 import axios from "axios";
+import {login} from "@/store/authSlice.js";
+import {useNavigate} from "react-router-dom";
+import axiosInstance from "@/api/axiosConfig.js";
 
 const Signup = () => {
-
+    const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const { name, username, password, email, phone_no } = useSelector((state) => state.signup);
@@ -50,7 +53,7 @@ const Signup = () => {
             console.log("Form data:", {
                 name, username, password, email, phone_no
             })
-            const response = await axios.post('http://localhost:3000/users/register', {
+            const response = await axiosInstance.post('http://localhost:3000/users/register', {
                 name,
                 username,
                 password,
@@ -58,6 +61,15 @@ const Signup = () => {
                 phone_no,
             });
             console.log("Response data:", response.data); // Log the response
+            if (response.status === 201) {
+                console.log("SignUp successful:", response.data);
+                dispatch(login({ username }));
+                navigate('/dashboard');
+            } else{
+                console.error("SignUp failed:", response.data);
+            }
+            // dispatch(login({ username }));
+            // navigate('/dashboard');
         } catch (error) {
             console.error("Error during signup:", error);
         }
