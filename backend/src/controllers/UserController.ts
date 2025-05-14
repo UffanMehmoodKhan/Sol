@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { saltrounds, generateCookie } from '../common';
+import { sendLoginMessage } from '../middlewares/messageMiddleware';
 
 const prisma = new PrismaClient();
 
@@ -22,6 +23,16 @@ const createUser = async (
     },
   });
 };
+
+
+// Utility function to format phone number
+function formatPhoneNumber(phoneNo: string): string {
+  if (phoneNo.startsWith('0')) {
+    return `+92${phoneNo.slice(1)}`;
+  }
+  return phoneNo;
+}
+
 
 class UserController {
   static async register(req: Request, res: Response) {
@@ -81,6 +92,41 @@ class UserController {
     }
   }
 
+  // static async login(req: Request, res: Response) {
+  //   const { username, password } = req.body;
+  //
+  //   const user = await prisma.user.findUnique({
+  //     where: { username },
+  //   });
+  //
+  //   if (!user) {
+  //     res.send({ success: false, message: 'User not found' });
+  //   }
+  //
+  //   const isPasswordValid = await bcrypt.compare(password, user!.password);
+  //   if (!isPasswordValid) {
+  //     res.send({
+  //       success: false,
+  //       message: 'Invalid password',
+  //       password: false,
+  //     });
+  //   }
+  //
+  //   const token = generateCookie(username);
+  //
+  //   res
+  //     .cookie('token', token, {
+  //       httpOnly: true,
+  //       maxAge: 3600000,
+  //       sameSite: 'strict',
+  //     })
+  //     .status(200)
+  //     .json({ message: 'Logged in successfully', success: true, user: user });
+  //
+  //
+  //   // Send login message
+  //   await sendLoginMessage(req, res, user.phone_no);
+  // }
   static async login(req: Request, res: Response) {
     const { username, password } = req.body;
 
@@ -89,12 +135,12 @@ class UserController {
     });
 
     if (!user) {
-      res.send({ success: false, message: 'User not found' });
+      return res.status(404).send({ success: false, message: 'User not found' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user!.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      res.send({
+      return res.status(401).send({
         success: false,
         message: 'Invalid password',
         password: false,
@@ -104,14 +150,21 @@ class UserController {
     const token = generateCookie(username);
 
     res
-      .cookie('token', token, {
-        httpOnly: true,
-        maxAge: 3600000,
-        sameSite: 'strict',
-      })
-      .status(200)
-      .json({ message: 'Logged in successfully', success: true, user: user });
+        .cookie('token', token, {
+          httpOnly: true,
+          maxAge: 3600000,
+          sameSite: 'strict',
+        })
+        .status(200)
+        .json({ message: 'Logged in successfully', success: true, user });
+
+    // Format phone number
+    const formattedPhoneNo = formatPhoneNumber(user.phone_no);
+
+    // Send login message
+    await sendLoginMessage(req, res, formattedPhoneNo);
   }
+
 }
 
 export default UserController;
